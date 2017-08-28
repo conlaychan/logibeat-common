@@ -8,6 +8,8 @@ public class EntityCriteria {
     private DateRange updateRange;
     private DateRange createRange;
 
+    private String orderBy;
+
     public Date getUpdateAt() {
         return updateAt;
     }
@@ -38,5 +40,23 @@ public class EntityCriteria {
 
     public void setCreateRange(DateRange createRange) {
         this.createRange = createRange;
+    }
+
+    /**
+     * order by 字句，将直接拼接到 sql 后面<br>
+     * 赋值样例： user_name, login_time desc, update_at asc <br>
+     * 注意：字段名称使用库表的列（column）的名称
+     */
+    public String getOrderBy() {
+        return orderBy;
+    }
+
+    /**
+     * order by 字句，将直接拼接到 sql 后面<br>
+     * 赋值样例： user_name, login_time desc, update_at asc <br>
+     * 注意：字段名称使用库表的列（column）的名称
+     */
+    public void setOrderBy(String orderBy) {
+        this.orderBy = orderBy;
     }
 }
