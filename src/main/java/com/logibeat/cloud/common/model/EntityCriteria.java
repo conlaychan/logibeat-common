@@ -10,8 +10,27 @@ public class EntityCriteria implements Serializable {
     private Date createAt;
     private DateRange updateRange;
     private DateRange createRange;
-
     private String orderBy;
+
+    /**
+     * offset 是分页查询用的
+     */
+    private Integer offset;
+    /**
+     * limit 是分页查询用的
+     */
+    private Integer limit;
+
+    /**
+     * offset 和 limit 是分页查询用的
+     */
+    public void buildOffsetLimit(Integer pageNo, Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? 20 : pageSize;
+        limit = pageSize > 0 ? pageSize : 20;
+        int offset = (pageNo - 1) * pageSize;
+        this.offset = offset > 0 ? offset : 0;
+    }
 
     public Date getUpdateAt() {
         return updateAt;
@@ -61,5 +80,13 @@ public class EntityCriteria implements Serializable {
      */
     public void setOrderBy(String orderBy) {
         this.orderBy = orderBy;
+    }
+
+    public Integer getOffset() {
+        return offset;
+    }
+
+    public Integer getLimit() {
+        return limit;
     }
 }
