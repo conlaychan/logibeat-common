@@ -1,7 +1,5 @@
 package com.logibeat.cloud.common.model;
 
-import com.google.common.collect.Range;
-
 import java.util.Date;
 
 public class EntityCriteria {
