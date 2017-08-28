@@ -1,8 +1,11 @@
 package com.logibeat.cloud.common.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class EntityCriteria {
+public class EntityCriteria implements Serializable {
+    private static final long serialVersionUID = -1846402828650498375L;
+
     private Date updateAt;
     private Date createAt;
     private DateRange updateRange;
