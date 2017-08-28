@@ -5,8 +5,8 @@ import java.util.Date;
 public class EntityCriteria {
     private Date updateAt;
     private Date createAt;
-    private Range<Date> updateRange;
-    private Range<Date> createRange;
+    private DateRange updateRange;
+    private DateRange createRange;
 
     public Date getUpdateAt() {
         return updateAt;
@@ -24,19 +24,19 @@ public class EntityCriteria {
         this.createAt = createAt;
     }
 
-    public Range<Date> getUpdateRange() {
+    public DateRange getUpdateRange() {
         return updateRange;
     }
 
-    public void setUpdateRange(Range<Date> updateRange) {
+    public void setUpdateRange(DateRange updateRange) {
         this.updateRange = updateRange;
     }
 
-    public Range<Date> getCreateRange() {
+    public DateRange getCreateRange() {
         return createRange;
     }
 
-    public void setCreateRange(Range<Date> createRange) {
+    public void setCreateRange(DateRange createRange) {
         this.createRange = createRange;
     }
 }
