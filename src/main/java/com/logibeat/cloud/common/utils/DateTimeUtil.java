@@ -12,11 +12,18 @@ public class DateTimeUtil {
     private DateTimeUtil(){}
 
     /**
-     * 获取系统当前日期
-     * @return 格式为 yyyy-MM-dd HH:mm:ss
+     * 获取系统当前时间并格式化为 yyyy-MM-dd HH:mm:ss
      */
     public static String currentTime() {
-        return DateTime.now().toString(DateTimePattern.COMMON_DATE_TIME);
+        return currentTime(DateTimePattern.COMMON_DATE_TIME);
+    }
+
+    /**
+     * 获取系统当前时间并格式化
+     * @param pattern {@link DateTimePattern}
+     */
+    public static String currentTime(String pattern) {
+        return DateTime.now().toString(pattern);
     }
 
     /**
@@ -28,11 +35,25 @@ public class DateTimeUtil {
     }
 
     /**
+     * 字符串转为 java.util.Date，格式必须为 yyyy-MM-dd HH:mm:ss
+     */
+    public static Date parse(String source){
+        return parse(source, DateTimePattern.COMMON_DATE_TIME);
+    }
+
+    /**
      * 格式化 java.util.Date
      * @param pattern {@link DateTimePattern}
      */
     public static String format(Date datetime, String pattern){
         return new DateTime(datetime).toString(pattern);
+    }
+
+    /**
+     * 格式化 java.util.Date 为 yyyy-MM-dd HH:mm:ss
+     */
+    public static String format(Date datetime){
+        return format(datetime, DateTimePattern.COMMON_DATE_TIME);
     }
 
     /**
