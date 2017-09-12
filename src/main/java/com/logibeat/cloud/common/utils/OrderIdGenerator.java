@@ -1,11 +1,8 @@
 package com.logibeat.cloud.common.utils;
 
-import com.google.common.util.concurrent.AtomicLongMap;
 import com.logibeat.cloud.common.enums.PayChannel;
 import org.joda.time.DateTime;
-
-import java.util.Timer;
-import java.util.TimerTask;
+import redis.clients.jedis.Jedis;
 
 /**
  * 订单id生成工具
@@ -13,36 +10,26 @@ import java.util.TimerTask;
 public class OrderIdGenerator {
     private OrderIdGenerator(){}
 
-    private static final AtomicLongMap<String> incrPerSecond = AtomicLongMap.create(); // 每一秒内的自增id
-    static {
-        // 每秒执行一次，清除上一秒的自增id
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                DateTime pre = DateTime.now().minusSeconds(1);
-                for (PayChannel payChannel : PayChannel.values()) {
-                    incrPerSecond.remove(joinDateTime(payChannel, pre).toString());
-                }
-            }
-        }, 0, 1000);
-    }
-
     /**
-     * 1：支付渠道，[0，z]，{@link PayChannel}<br>
+     * 1：支付渠道，[0，Z]，{@link PayChannel}<br>
      * 2-3：年，[00，99]<br>
-     * 4：月，[1，c]<br>
-     * 5：日，[1，v]<br>
-     * 6：时，[0，n]<br>
+     * 4：月，[1，C]<br>
+     * 5：日，[1，V]<br>
+     * 6：时，[0，N]<br>
      * 7-8：分，[0，59]<br>
      * 9-10：秒，[0，59]<br>
      * 11-14：自增
      * @param payChannel
      * @return 如果一秒内生成次数大于9999，将会自动扩增长度
      */
-    public static String generate(PayChannel payChannel) {
-        StringBuilder sb = joinDateTime(payChannel, DateTime.now());
-        sb.append(autoIncrId(sb.toString()));
-        return sb.toString();
+    public static String generate(PayChannel payChannel, Jedis jedis) {
+        try {
+            StringBuilder sb = joinDateTime(payChannel, DateTime.now());
+            sb.append(autoIncrId(sb.toString(), jedis));
+            return sb.toString();
+        } finally {
+            jedis.close();
+        }
     }
 
     private static StringBuilder joinDateTime(PayChannel payChannel, DateTime time){
@@ -85,8 +72,11 @@ public class OrderIdGenerator {
         return second < 10 ? "0" + second : Integer.toString(second);
     }
 
-    private static String autoIncrId(String key) {
-        String id = Long.toString(incrPerSecond.incrementAndGet(key));
+    private static String autoIncrId(String key, Jedis jedis) {
+        String id = jedis.incr(key).toString();
+        if ("1".equals(id)) {
+            jedis.expire(key, 3600); // 设置下过期时间1个小时，理论上本可以设置为1秒，但是考虑到分布式系统中各台服务器的系统时间可能不一致……
+        }
         switch (id.length()) {
             case 1: return "000" + id;
             case 2: return "00" + id;
