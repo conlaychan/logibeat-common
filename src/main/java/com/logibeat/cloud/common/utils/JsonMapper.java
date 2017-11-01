@@ -85,6 +85,10 @@ public class JsonMapper {
         return fromJson(json, constructParametricType(Map.class, keyClass, valueClass));
     }
 
+    public static Map<String, Object> fromJsonToMap(String json) {
+        return fromJson(json, constructParametricType(Map.class, String.class, Object.class));
+    }
+
     /**
      * 构造泛型的 Java Type如:<br>
      * ArrayList<MyBean>, 则调用 constructParametricType(ArrayList.class,MyBean.class)<br>
